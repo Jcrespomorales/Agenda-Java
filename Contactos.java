@@ -31,4 +31,12 @@ public class Contactos {
         nombre = nuevoTelefono;
     }
     
+
+    @Override
+    public String toString() {
+        System.out.println("\nNuevo contacto creado");
+        System.out.println("----------------------");
+        return "\nNombre: " + nombre + "\nEmail: " + email + "\nTeléfono: " + telefono;
+
+}
 }
