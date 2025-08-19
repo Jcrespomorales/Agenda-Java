@@ -32,8 +32,8 @@ public class AgendaContactos {
                 añadirContactos(scannerInput, listaContactos, nuevoContacto, opcionElegida, opcionesAgenda);
                 break;
             case 2:
-                System.out.println("\nHa elegido la opción de ");
-                break;
+                editarContactos(null, scannerInput, nuevoContacto, listaContactos);
+                
             case 3:
                 System.out.println("\nHa elegido la opción de ");
                 break;
@@ -95,17 +95,42 @@ public class AgendaContactos {
                 
             } else {
                 menuInicio(scannerInput, opcionesAgenda, opcionElegida);                                
+            }       
+    }
+
+    public static void editarContactos(Contactos contactoEditable, Scanner scannerInput, String nuevoContacto, ArrayList<Contactos> listaContactos) {
+        System.out.println("\nEditar contactos");
+        System.out.println("-----------------");
+        System.out.println("Escribe el nombre del contacto que quieres editar:");
+        String nombreBuscado = scannerInput.nextLine();
+        boolean encontrado = false;
+        for (Contactos contacto : listaContactos) {
+            if (nombreBuscado.equalsIgnoreCase(contacto.getNombre())) {
+                System.out.println("Indica el nuevo nombre para el contacto: ");
+                String nuevoNombre = scannerInput.nextLine();
+                contacto.setNombre(nuevoNombre);
+                System.out.println("Contacto actualizado:");
+                System.out.println(contacto);
+                encontrado = true;
+                break;
             }
-            
-        
-        
+        }
+        if (!encontrado) {
+            System.out.println("No se ha encontrado ningún usuario con el nombre " + nombreBuscado);
+        }
     }
 
     // Función mostrar todos los contactos
     public static void mostrarContactos(ArrayList<Contactos> listaContactos) {
-        for (Object conctacto : listaContactos) {
-            System.out.println(conctacto);
-            
+        System.out.println("Mostrar contactos");
+        System.out.println("---------------");
+        if (listaContactos.isEmpty()) {
+            System.out.println("No hay contactos en la agenda.");
+        } else {
+            System.out.println("Lista de contactos:");
+            for (Contactos contacto : listaContactos) {
+                System.out.println(contacto.getNombre());
+            }
         }
     }
 
