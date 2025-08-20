@@ -19,44 +19,19 @@ public class AgendaContactos {
         
         int opcionElegida = 999;
         var listaContactos = new ArrayList<Contactos>();
-        String nuevoContacto = "";
+        String crearNuevoContacto = "";
 
         
-
         // Menú Inicio
-        switch (menuInicio(scannerInput, opcionesAgenda, opcionElegida)) {
-            case 0:
-                System.out.println("\nSaliendo de la aplicación....\nAdios!!");            
-                break;
-            case 1:
-                añadirContactos(scannerInput, listaContactos, nuevoContacto, opcionElegida, opcionesAgenda);
-                break;
-            case 2:
-                editarContactos(null, scannerInput, nuevoContacto, listaContactos);
-                
-            case 3:
-                System.out.println("\nHa elegido la opción de ");
-                break;
-            case 4:
-                mostrarContactos(listaContactos);
-                break;
-            case 5:
-                System.out.println("\nHa elegido la opción de ");
-                break;
-            case 6:
-                System.out.println("\nHa elegido la opción de ");
-                break;
-        
-            default:
-                break;
-        }
+        menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
 
         scannerInput.close();
     }
 
     
     // Función de Menú de Inicio
-    public static int menuInicio(Scanner scannerInput, HashMap<Integer, String> opcionesAgenda, int opcionElegida ) {
+    public static void menuInicio(Scanner scannerInput, HashMap<Integer, String> opcionesAgenda, int opcionElegida, String crearNuevoContacto, ArrayList<Contactos> listaContactos) {
+        opcionElegida = 999;
         System.out.println("\nAgenda de contactos");
         System.out.println("-------------------");
         for (var entry : opcionesAgenda.entrySet()) {
@@ -71,7 +46,39 @@ public class AgendaContactos {
             opcionElegida = scannerInput.nextInt();
             scannerInput.nextLine();            
         }
-        return opcionElegida;
+        switch (opcionElegida) {
+            case 0:
+                System.out.println("\nSaliendo de la aplicación....\nAdios!!");            
+                break;
+            case 1:
+                añadirContactos(scannerInput, listaContactos, crearNuevoContacto, opcionElegida, opcionesAgenda);
+                menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
+                break;
+            case 2:
+                editarContactos(null, scannerInput, listaContactos);
+                menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
+                
+            case 3:
+                buscarContacto(listaContactos, scannerInput);
+                menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
+                break;
+            case 4:
+                mostrarContactos(listaContactos);
+                menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
+                break;
+            case 5:
+                System.out.println("\nHa elegido la opción de ");
+                menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
+                break;
+            case 6:
+                System.out.println("\nHa elegido la opción de ");
+                menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
+                break;
+        
+            default:
+                break;
+        }
+
     }
 
 
@@ -94,11 +101,17 @@ public class AgendaContactos {
                 añadirContactos(scannerInput, listaContactos, nuevoContacto, opcionElegida, opcionesAgenda);
                 
             } else {
-                menuInicio(scannerInput, opcionesAgenda, opcionElegida);                                
-            }       
+                System.out.println("Volviendo al menú principal....");                               
+            } 
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }      
     }
 
-    public static void editarContactos(Contactos contactoEditable, Scanner scannerInput, String nuevoContacto, ArrayList<Contactos> listaContactos) {
+    // Función editar contacto
+    public static void editarContactos(Contactos contactoEditable, Scanner scannerInput, ArrayList<Contactos> listaContactos) {
         System.out.println("\nEditar contactos");
         System.out.println("-----------------");
         System.out.println("Escribe el nombre del contacto que quieres editar:");
@@ -118,6 +131,37 @@ public class AgendaContactos {
         if (!encontrado) {
             System.out.println("No se ha encontrado ningún usuario con el nombre " + nombreBuscado);
         }
+        System.out.println("Volviendo al menú principal....");                                       
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }      
+    }
+
+    // Función buscar contacto
+    public static void buscarContacto(ArrayList<Contactos> listaContactos, Scanner scannerInput) {
+        System.out.println("\nBuscar contacto");
+        System.out.println("---------------");
+        System.out.println("Ingresa el nombre del contacto que buscas: ");
+        String contactoBuscado = scannerInput.nextLine();        
+        for (Contactos contacto : listaContactos) {
+            if (contactoBuscado.toLowerCase().equals(contacto.getNombre().toLowerCase())) {
+                System.out.println("\nNombre: " + contacto.getNombre() + "\nEmail: " + contacto.getEmail() + "\nTeléfono: " + contacto.getTelefono());                
+            } else {
+                System.out.println("No se ha encontrado ningún contacto con ese nombre");                
+            }
+            
+        }
+        System.out.println("Volviendo al menú principal....");                                       
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }      
+
+        
+
     }
 
     // Función mostrar todos los contactos
@@ -129,9 +173,15 @@ public class AgendaContactos {
         } else {
             System.out.println("Lista de contactos:");
             for (Contactos contacto : listaContactos) {
-                System.out.println(contacto.getNombre());
+                System.out.println(" - " + contacto.getNombre());
             }
         }
+        System.out.println("Volviendo al menú principal....");                                       
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }      
     }
 
     
