@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AgendaContactos {
@@ -39,12 +40,20 @@ public class AgendaContactos {
                 System.out.println(entry.getKey() + " - " + entry.getValue());
             }
         }
-        System.out.println("0 - " + opcionesAgenda.get(0));                
-        while (!opcionesAgenda.containsKey(opcionElegida)) {            
-            System.out.println("\nPor favor elige una opcion del 1 al 6");
-            System.out.println("Si desea salir pulse 0"); 
-            opcionElegida = scannerInput.nextInt();
-            scannerInput.nextLine();            
+        System.out.println("0 - " + opcionesAgenda.get(0)); 
+        try {
+            while (!opcionesAgenda.containsKey(opcionElegida)) {            
+                System.out.println("\nPor favor elige una opcion del 1 al 6");
+                System.out.println("Si desea salir pulse 0"); 
+                opcionElegida = scannerInput.nextInt();
+                scannerInput.nextLine();
+            }
+            
+        } catch (InputMismatchException e) {
+            System.out.println("Ingresa un número, ningún otro caracter es válido"); 
+            intervaloTiempo(1000);  
+            scannerInput.nextLine();
+            menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
         }
         switch (opcionElegida) {
             case 0:
@@ -67,11 +76,11 @@ public class AgendaContactos {
                 menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
                 break;
             case 5:
-                System.out.println("\nHa elegido la opción de ");
+                guardarContactosEnArchivo(listaContactos);
                 menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
                 break;
             case 6:
-                System.out.println("\nHa elegido la opción de ");
+                eliminarContacto(listaContactos, scannerInput);
                 menuInicio(scannerInput, opcionesAgenda, opcionElegida, crearNuevoContacto, listaContactos);
                 break;
         
@@ -101,13 +110,9 @@ public class AgendaContactos {
                 añadirContactos(scannerInput, listaContactos, nuevoContacto, opcionElegida, opcionesAgenda);
                 
             } else {
-                System.out.println("Volviendo al menú principal....");                               
+                System.out.println("\nVolviendo al menú principal....");                               
             } 
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }      
+            intervaloTiempo(2000);  
     }
 
     // Función editar contacto
@@ -131,12 +136,8 @@ public class AgendaContactos {
         if (!encontrado) {
             System.out.println("No se ha encontrado ningún usuario con el nombre " + nombreBuscado);
         }
-        System.out.println("Volviendo al menú principal....");                                       
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }      
+        System.out.println("\nVolviendo al menú principal....");                                       
+        intervaloTiempo(2000);  
     }
 
     // Función buscar contacto
@@ -153,15 +154,8 @@ public class AgendaContactos {
             }
             
         }
-        System.out.println("Volviendo al menú principal....");                                       
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }      
-
-        
-
+        System.out.println("\nVolviendo al menú principal....");                                       
+        intervaloTiempo(2000);   
     }
 
     // Función mostrar todos los contactos
@@ -176,12 +170,63 @@ public class AgendaContactos {
                 System.out.println(" - " + contacto.getNombre());
             }
         }
-        System.out.println("Volviendo al menú principal....");                                       
+        System.out.println("\nVolviendo al menú principal....");                                       
+        intervaloTiempo(2000);
+    }
+
+
+    // Guardar contactos en un archivo local
+    public static void guardarContactosEnArchivo(ArrayList<Contactos> listaContactos) {
+        String rutaEscritorio = System.getProperty("user.home") + "\\Desktop\\contactos_agenda.txt";
+        try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(rutaEscritorio))) {
+            for (Contactos contacto : listaContactos) {
+                writer.write(contacto.toString());
+                writer.newLine();
+                writer.write("----------------------");
+                writer.newLine();
+            }
+            System.out.println("Contactos guardados en: " + rutaEscritorio);
+        } catch (Exception e) {
+            System.out.println("Error al guardar los contactos: " + e.getMessage());
+        }
+    }
+
+    // Función eliminar contacto
+    public static void eliminarContacto(ArrayList<Contactos> listaContactos, Scanner scanerInput) {
+        System.out.println("\nEliminar contacto");
+        System.out.println("-----------------");
+        if (listaContactos.isEmpty()) {
+            System.out.println("No hay contactos en la agenda.");
+        } else {
+            System.out.println("Ingresa el nombre del contacto que quieres eliminar: ");
+            String nombreEliminable = scanerInput.nextLine();
+            for (int i = 0; i < listaContactos.size(); i++) {
+                if (listaContactos.get(i).getNombre().toLowerCase().equals(nombreEliminable.toLowerCase())) {
+                    listaContactos.remove(i);
+                    System.out.println("Contacto eliminado con exito: " + nombreEliminable);
+                } else {
+                    System.out.println("No hay ningún contacto en la lista con este nombre : " + nombreEliminable);
+                }
+                System.out.println("\nVolviendo al menú principal....");                                       
+                intervaloTiempo(2000);
+            }                
+        }
+                
+            
+        
+
+    }
+
+
+
+
+    // Función intervalo de tiempo
+    public static void intervaloTiempo(int milisegundos) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(milisegundos);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }      
+        }   
     }
 
     
